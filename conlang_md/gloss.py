@@ -6,7 +6,7 @@ from markdown.util import etree
 
 GLOSS_START = ':gloss:'
 
-RE_WORD = re.compile(r'(\S+)|\{([^}]*)\}')
+RE_WORD = re.compile(r'\{([^}]*)\}|(\S+)')
 
 INDENT_LENGTH = 4
 
