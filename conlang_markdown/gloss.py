@@ -6,7 +6,9 @@ from markdown.util import etree
 
 GLOSS_START = ':gloss:'
 
-RE_WORD = re.compile(r'(\w+)|\{([^}]*)\}')
+RE_WORD = re.compile(r'(\S+)|\{([^}]*)\}')
+
+INDENT_LENGTH = 4
 
 class GlossProcessor(BlockProcessor):
     """Processes interlinear glosses."""
@@ -19,18 +21,51 @@ class GlossProcessor(BlockProcessor):
         """Parse a `gloss` block"""
         # split into lines, discarding the first line (which just contains the
         # tag)
-        lines = blocks.pop(0).split('\n')[1:]
+        lines_raw = blocks.pop(0).split('\n')[1:]
+        lines = []
+        # last line of preamble
+        pre = None
+        # first line of postamble
+        post = None
+        # current line
+        i = 0
+        # iterate over raw lines, consolidating indented lines, and determining
+        # the location of the pre- and post-amble
+        for line in lines_raw:
+            if lines and line.startswith(' ' * INDENT_LENGTH):
+                # indented line; append to previous
+                lines[-1] += line
+            elif line.strip() == "::":
+                # `::` alone on a line marks the end of the preamble or the
+                # start of the postamble
+                if pre == None:
+                    pre = i
+                elif post == None:
+                    post = i
+                else:
+                    raise SyntaxError("Too many `::` in `gloss` block.")
+            else:
+                # append line and increment counter
+                lines.append(line)
+                i += 1
+        # we need both a preamble and a postamble, tho both can be empty
+        if pre == None or Post == None:
+            raise SyntaxError("Not enough `::` in `gloss` block.")
         div = etree.SubElement(parent, "div")
-        div.attrib["class"] = "gloss"
-        columns = []
+        div.set("class", "gloss")
+        # preamble
+        for line in lines[:pre]:
+            par = etree.SubElement(div, "p")
+            par.text = line
         # create columns for each word of the source
-        for word in _parse_gloss_line(lines[0]):
+        columns = []
+        for word in _parse_gloss_line(lines[pre]):
             dl = etree.SubElement(div, "dl")
             dt = etree.SubElement(dl, "dt")
             dt.text = word
             columns.append(dl)
         # iterate over subsequent lines
-        for line in lines[1:]:
+        for line in lines[pre+1:post]:
             words = _parse_gloss_line(line)
             # iterate over columns
             for i, dl in enumerate(columns):
@@ -41,6 +76,10 @@ class GlossProcessor(BlockProcessor):
                 else:
                     # otherwise, add an empty `<dd>` element
                     etree.SubElement(dl, "dd")
+        # postamble
+        for line in lines[post:]:
+            par = etree.SubElement(div, "p")
+            par.text = line
 
 
 class GlossExtension(Extension):
@@ -63,4 +102,4 @@ def _whichever(x, y):
 
     If both `x` and `y` are `None`, returns `None`.
     """
-    y if x is None else x
+    return y if x is None else x
