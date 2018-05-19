@@ -8,6 +8,8 @@ GLOSS_START = ':gloss:'
 
 RE_WORD = re.compile(r'\{([^}]*)\}|(\S+)')
 
+RE_CLASS = re.compile(r'\[([^\]]*)\]')
+
 INDENT_LENGTH = 4
 
 class GlossProcessor(BlockProcessor):
@@ -56,16 +58,39 @@ class GlossProcessor(BlockProcessor):
         # preamble
         for line in lines[:pre]:
             par = etree.SubElement(div, "p")
+            # set class if class tag present
+            m = RE_CLASS.match(line)
+            if m is not None:
+                par.set("class", m.group(1))
+                # extract the rest of the line
+                line = line[m.end():]
             par.text = line
         # create columns for each word of the source
         columns = []
-        for word in _parse_gloss_line(lines[pre]):
+        line = lines[pre]
+        # get class tag, if present
+        m = RE_CLASS.match(line)
+        cl = None
+        if m is not None:
+            cl = m.group(1)
+            # extract the rest of the line
+            line = line[m.end():]
+        for word in _parse_gloss_line(line):
             dl = etree.SubElement(div, "dl")
             dt = etree.SubElement(dl, "dt")
             dt.text = word
+            if cl is not None:
+                dt.set("class", cl)
             columns.append(dl)
         # iterate over subsequent lines
         for line in lines[pre+1:post]:
+            # get class tag, if present
+            m = RE_CLASS.match(line)
+            cl = None
+            if m is not None:
+                cl = m.group(1)
+                # extract the rest of the line
+                line = line[m.end():]
             words = _parse_gloss_line(line)
             # iterate over columns
             for i, dl in enumerate(columns):
@@ -76,9 +101,18 @@ class GlossProcessor(BlockProcessor):
                 else:
                     # otherwise, add an empty `<dd>` element
                     etree.SubElement(dl, "dd")
+                # set class tag
+                if cl is not None:
+                    dd.set("class", cl)
         # postamble
         for line in lines[post:]:
             par = etree.SubElement(div, "p")
+            # set class if class tag present
+            m = RE_CLASS.match(line)
+            if m is not None:
+                par.set("class", m.group(1))
+                # extract the rest of the line
+                line = line[m.end():]
             par.text = line
 
 
