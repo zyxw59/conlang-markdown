@@ -9,7 +9,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'conlang_markdown'
+NAME = 'conlang_md'
 DESCRIPTION = 'Markdown extensions for writing conlang documentation'
 URL = 'https://github.com/zyxw59/conlang-markdown'
 EMAIL = 'zyxw59@gmail.com'
