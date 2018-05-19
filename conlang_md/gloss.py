@@ -49,7 +49,7 @@ class GlossProcessor(BlockProcessor):
                 lines.append(line)
                 i += 1
         # we need both a preamble and a postamble, tho both can be empty
-        if pre == None or Post == None:
+        if pre == None or post == None:
             raise SyntaxError("Not enough `::` in `gloss` block.")
         div = etree.SubElement(parent, "div")
         div.set("class", "gloss")
@@ -86,6 +86,9 @@ class GlossExtension(Extension):
     def extendMarkdown(self, md, md_globals):
         md.parser.blockprocessors.add("gloss", GlossProcessor(md.parser), "<paragraph")
 
+
+def makeExtension(**kwargs):
+    return GlossExtension(**kwargs)
 
 def _parse_gloss_line(line):
     """
