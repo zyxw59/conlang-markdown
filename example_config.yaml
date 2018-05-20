@@ -1,0 +1,4 @@
+conlang_md.document:
+    stylesheets:
+        - css/gloss
+        - example
