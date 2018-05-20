@@ -4,7 +4,7 @@
 [conlang] slojwəs deh weh.
 ::
 [conlang] sloj-wəs deh weh
-clean-1s RFL.ACC.s 1s.ACC
+clean-1s ^^rfl^^.^^acc^^.s 1s.^^acc^^
 ::
 I washed (myself).
 
@@ -12,7 +12,7 @@ I washed (myself).
 [conlang] mbakkəh dlew məwhəh.
 ::
 [conlang] mbak-kəh dlew məwh-əh
-shout-3p all person-NOM.p
+shout-3p all person-^^nom^^.p
 ::
 All of the people shouted.
 
@@ -20,6 +20,6 @@ All of the people shouted.
 [conlang] tnekdéhkəh məwhhè zəj tráwəs howtləjdhè kra.
 ::
 [conlang] tnek-déh-kəh məwh-hè zəj trá-wəs howtləjd-hè krа
-{[be ill]-INCH-PAS.3s} man-ACC.s REL give-1s-ACC.s PN.3.LOC.s
+{[be ill]-^^inch^^-^^pas^^.3s} man-^^acc^^.s ^^rel^^ give-1s-^^acc^^.s ^^pn^^.3.^^loc^^.s
 ::
 The man that I gave the tea to got sick.

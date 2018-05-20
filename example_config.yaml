@@ -1,4 +1,5 @@
 conlang_md.document:
     stylesheets:
         - css/gloss
+        - css/smallcaps
         - example
