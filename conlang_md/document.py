@@ -24,6 +24,9 @@ class DocumentGenerator(Treeprocessor):
                     rel="stylesheet",
                     href=str(self.css_path.joinpath(style).with_suffix(".css"))
                     ).tail = "\n"
+        title = etree.SubElement(head, "title")
+        title.text = _first(root.findall("h1")).text
+        title.tail = "\n"
         body = etree.SubElement(html, "body")
         # for pretty printing
         html.text = "\n"
@@ -54,3 +57,11 @@ class DocumentExtension(Extension):
 
 def makeExtension(**kwargs):
     return DocumentExtension(**kwargs)
+
+
+def _first(it):
+    """Returns the first element of an iterator or list."""
+    try:
+        return it[0]
+    except TypeError:
+        return next(it)
